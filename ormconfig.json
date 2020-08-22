@@ -3,5 +3,8 @@
   "host":"localhost",
   "port": 27017,
   "database": "ecommerce",
-  "useUnifiedTopology": true
+  "useUnifiedTopology": true,
+  "entities":[
+    "./src/schemas/*.ts"
+  ]
 }
