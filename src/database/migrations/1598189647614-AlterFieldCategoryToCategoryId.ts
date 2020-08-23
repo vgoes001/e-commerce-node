@@ -42,6 +42,7 @@ export default class AlterFieldCategoryToCategoryId1598189647614
       new TableColumn({
         name: 'category',
         type: 'varchar',
+        isNullable: true,
       }),
     );
   }
