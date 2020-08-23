@@ -1,27 +1,27 @@
 import { Router, Response, Request } from 'express';
+import { getCustomRepository } from 'typeorm';
 import UsersRepository from '../repositories/UsersRepositories';
+import CreateUserService from '../services/CreateUserService';
 
 const usersRouter = Router();
 
-const usersRepository = new UsersRepository();
-
 usersRouter.get('/', (request: Request, response: Response) => {
-  const users = usersRepository.all();
+  const usersRepository = getCustomRepository(UsersRepository);
+  const users = usersRepository.find();
   return response.json(users);
 });
 
-usersRouter.post('/', (request: Request, response: Response) => {
-  const { name, email, password } = request.body;
+usersRouter.post('/', async (request: Request, response: Response) => {
+  try {
+    const { name, email, password } = request.body;
 
-  const findUserWithSameName = usersRepository.findByName(name);
+    const createUser = new CreateUserService();
+    const user = await createUser.execute({ name, email, password });
 
-  if (findUserWithSameName) {
-    return response.status(400).json({ message: 'This name is already used' });
+    return response.json(user);
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
   }
-
-  const user = usersRepository.create({ name, email, password });
-
-  return response.json(user);
 });
 
 export default usersRouter;

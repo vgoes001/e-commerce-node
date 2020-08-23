@@ -1,31 +1,10 @@
-import User from '../schemas/User';
+import { EntityRepository, Repository } from 'typeorm';
+import User from '../models/User';
 
-interface CreateUserDTO {
-  name: string;
-  email: string;
-  password: string;
-}
-
-export default class UsersRepository {
-  private users: User[];
-
-  constructor() {
-    this.users = [];
-  }
-
-  public all(): User[] {
-    return this.users;
-  }
-
-  public findByName(name: string): User | undefined {
-    const findUser = this.users.find(user => user.name === name);
-
+@EntityRepository(User)
+export default class UsersRepository extends Repository<User> {
+  public async findByName(name: string): Promise<User | undefined> {
+    const findUser = await this.findOne({ where: { name } });
     return findUser;
-  }
-
-  public create({ name, email, password }: CreateUserDTO): User {
-    const user = new User({ name, email, password });
-    this.users.push(user);
-    return user;
   }
 }
