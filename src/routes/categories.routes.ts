@@ -1,8 +1,11 @@
 import { Router, Response, Request } from 'express';
 
 import CreateCategoryService from '../services/CreateCategoryService';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const categoriesRouter = Router();
+
+categoriesRouter.use(ensureAuthenticated);
 
 categoriesRouter.post('/', async (request: Request, response: Response) => {
   try {

@@ -1,8 +1,14 @@
 import { Router, Response, Request } from 'express';
+import multer from 'multer';
+import uploadConfig from '../config/upload';
 
 import CreateProductService from '../services/CreateProductService';
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const productsRouter = Router();
+const upload = multer(uploadConfig);
+
+productsRouter.use(ensureAuthenticated);
 
 productsRouter.post('/', async (request: Request, response: Response) => {
   try {
@@ -22,5 +28,13 @@ productsRouter.post('/', async (request: Request, response: Response) => {
     return response.status(400).json({ error: err.message });
   }
 });
+
+productsRouter.patch(
+  '/image',
+  upload.single('image'),
+  async (request, response) => {
+    return response.json({ ok: true });
+  },
+);
 
 export default productsRouter;
